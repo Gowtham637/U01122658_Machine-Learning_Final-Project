@@ -1,3 +1,4 @@
+# used Streamlit app to compare Three ML models and analyze prediabetes risk direction
 import streamlit as st
 import pandas as pd
 
@@ -25,7 +26,7 @@ st.write(
     "Then it checks whether a prediabetes person looks closer to the normal group or diabetes group."
 )
 
-
+ # load dataset for displaying overview and basic statistics
 diabetesData = pd.read_csv("diabetes_012_health_indicators_BRFSS2015.csv")
 
 
@@ -39,11 +40,11 @@ st.dataframe(diabetesData.head())
 
 st.write("Target distribution:")
 st.write(diabetesData["Diabetes_012"].value_counts())
-
+# train multiple models and compare their performance
 st.header(" TRAING MODELS AND COMPARING THEM ")
 
 if st.button("Run Models"):
-
+   # prepare data (includes splitting and SMOTE balancing)
     balancedTrainingInputData, testingInputData, balancedTrainingOutputData, testingOutputData = prepareData()
 
     modelList = [
@@ -53,18 +54,18 @@ if st.button("Run Models"):
     ]
 
     finalResults = []
-
+    # run each model using same training pipeline
     for modelName, modelFunction in modelList:
 
         st.subheader(modelName)
-
+        # train current model
         model = modelFunction(
             balancedTrainingInputData,
             balancedTrainingOutputData
         )
-
+        # predict on test data to evaluate performance
         prediction = model.predict(testingInputData)
-
+             
         accuracy = accuracy_score(testingOutputData, prediction)
         precision = precision_score(testingOutputData, prediction)
         recall = recall_score(testingOutputData, prediction)
@@ -80,17 +81,17 @@ if st.button("Run Models"):
             "Recall": recall,
             "F1 Score": f1
         })
-
+     #store results for three models
     resultTable = pd.DataFrame(finalResults)
 
     st.subheader("Model Comparison")
     st.dataframe(resultTable)
-
+    # selecting the best model based on recall
     bestModel = resultTable.sort_values(by="Recall", ascending=False).iloc[0]
 
     st.success("Best model based on recall: " + bestModel["Model"])
 
-
+ # take user input to check risk direction for a single person
 st.header("Prediabetes Risk Direction")
 
 st.write("Enter values for one person.")
@@ -130,7 +131,7 @@ if st.button("Check Risk Direction"):
         balancedTrainingInputData,
         balancedTrainingOutputData
     )
-
+    # creating input in same format as training dataset
     personData = pd.DataFrame([{
         "HighBP": highBP,
         "HighChol": highChol,
@@ -154,12 +155,12 @@ if st.button("Check Risk Direction"):
         "Education": education,
         "Income": income
     }])
-
+    # this model returns probability of being closer to normal or diabetes
     probability = diabetesDirectionModel.predict_proba(personData)
 
     normalChance = probability[0][0]
     diabetesChance = probability[0][1]
-
+    # deciding risk based on higher probability
     st.write("Normal side probability:", normalChance)
     st.write("Diabetes side probability:", diabetesChance)
 
@@ -168,7 +169,7 @@ if st.button("Check Risk Direction"):
     else:
         st.success("Low risk toward normal")
 
-
+# note about limitation due to lack of time-based data
 st.header("Project Limitation")
 
 st.write(

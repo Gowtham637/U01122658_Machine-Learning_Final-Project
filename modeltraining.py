@@ -1,18 +1,18 @@
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
-
+ # traing logistic Regression model 
 def trainLogisticRegressionModel(balancedTrainingInputData, balancedTrainingOutputData):
 
     diabetesDirectionModel = LogisticRegression(max_iter=3000)
-
+     #fit model on balanced training data
     diabetesDirectionModel.fit(
         balancedTrainingInputData,
         balancedTrainingOutputData
     )
 
     return diabetesDirectionModel
-
+# training Random Forest model
 def trainRandomForestClassifier(balancedTrainingInputData,balancedTrainingOutputData):
 
   diabetesDirectionModel = RandomForestClassifier(
@@ -20,7 +20,7 @@ def trainRandomForestClassifier(balancedTrainingInputData,balancedTrainingOutput
       max_depth=8,
       random_state=42
     )
-
+   # fit model on balanced training data
   diabetesDirectionModel.fit(
     balancedTrainingInputData,
     balancedTrainingOutputData
@@ -29,7 +29,7 @@ def trainRandomForestClassifier(balancedTrainingInputData,balancedTrainingOutput
   return diabetesDirectionModel
 
 
-
+#traing 3rd modelXgboostclassifier  model
 def trainXGBClassifier(balancedTrainingInputData, balancedTrainingOutputData):
 
  diabetesDirectionModel = XGBClassifier(
@@ -39,7 +39,7 @@ def trainXGBClassifier(balancedTrainingInputData, balancedTrainingOutputData):
       random_state=42,
       eval_metric="logloss"
   )
-
+   # fit model on balanced training data
  diabetesDirectionModel.fit(
     balancedTrainingInputData,
     balancedTrainingOutputData

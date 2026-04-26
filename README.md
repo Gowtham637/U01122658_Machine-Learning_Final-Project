@@ -4,16 +4,28 @@
 # Diabetes Risk Prediction using CDC Health Indicators
 ## Overview
 
-For this project, I chose to work with a real-world healthcare dataset from the CDC (BRFSS). The main idea is to understand how different health and lifestyle factors are related to diabetes and see if I can build a model that predicts diabetes risk.
-Right now, the project is in the initial stage, so the focus is on exploring the data properly before moving into modeling.
+For this project, I worked with a real-world healthcare dataset from the CDC (BRFSS).
+The goal was to understand how different health and lifestyle factors relate to diabetes and build a model that can analyze risk.
+
+Instead of directly predicting all three classes, I took a slightly different approach. I trained models on clear cases (no diabetes and diabetes) and then applied them to prediabetes cases to see which side they are closer to.
+
 
 ## Problem
-Diabetes is a very common health condition, and in many cases it can be managed better if identified early.
-In this project, the goal is to use the given health data to classify people into:
-* No diabetes
-* Prediabetes
-* Diabetes
-So this becomes a multiclass classification problem.
+The dataset has three categories:
+* 0 → No diabetes
+* 1 → Prediabetes
+* 2 → Diabetes
+
+Prediabetes is not a clear category, so training a model directly on all three classes can be confusing.
+
+So instead of treating it as a normal multiclass problem, I:
+
+* Trained models using only 0 and 2 (clear cases)
+* Converted it into a binary classification problem
+* Used the trained model to analyze prediabetes cases (class 1)
+
+This way, the model acts more like a **pattern comparison system**.
+
 
 ## Dataset
 
@@ -25,85 +37,99 @@ The dataset is based on survey responses and includes information like:
 * BMI
 * Age
 * Blood pressure
+* Cholesterol
 * Physical activity
-* Smoking habits
-* General health
+* Lifestyle factors
+
 
 Target column:
 
 * Diabetes_012 (0, 1, 2)
 
-## What I plan to do
+## What I did
 
-Since I am just starting, I will be following a step-by-step approach instead of jumping directly into modeling.
+### Data preprocessing
 
-### Step 1: Understand the data
+* Loaded and checked the dataset
+* Removed duplicate rows
+* Filtered out prediabetes cases for training
+* Converted the target into binary (0 and 2 → 0 and 1)
+* Split data into training and testing
 
-First, I will look at the dataset structure, number of rows and columns, and data types. This will help me get a basic idea of what I am working with.
+### Handling imbalance
 
-### Step 2: Explore the data (EDA)
+The dataset was imbalanced (more normal cases than diabetes).
 
-I plan to check how the data is distributed and look for patterns.
+To fix this, I used SMOTE to balance the training data so the model doesn’t become biased.
 
-Some things I will focus on:
+### Models used
 
-* How the diabetes categories are distributed
-* How features like BMI and age vary
-* Any visible relationships between features
-
-### Step 3: Clean the data
-
-If there are missing values or inconsistencies, I will handle them before moving forward.
-
-### Step 4: Preprocess the data
-
-This includes:
-
-* Converting categorical values into numbers
-* Scaling numerical features if needed
-* Preparing the dataset for model training
-
-### Step 5: Handle imbalance
-
-If the dataset is imbalanced, I will try basic techniques to handle it so that the model does not become biased.
-
-### Step 6: Build models
-
-I plan to try a few different models such as:
+I tried a few different models:
 
 * Logistic Regression
 * Random Forest
-* Gradient Boosting
+* XGBoost
 
-### Step 7: Evaluate models
+### Evaluation
 
-Instead of only looking at accuracy, I will also check:
+I didn’t just rely on accuracy. I also looked at:
 
 * Precision
 * Recall
 * F1-score
 * Confusion matrix
 
-### Step 8: Compare results
+I focused more on **recall**, because missing a high-risk case is more serious than a false prediction.
 
-After training different models, I will compare their performance and see which one works better.
+### Model comparison
 
-## Expected outcome
+All models were trained on the same data and compared using the same metrics.
 
-By the end of this project, I expect to:
+The best model was selected based on recall.
+### Prediabetes analysis
 
-* Understand which factors are most related to diabetes
-* Build a basic model that can predict diabetes risk
-* Get hands-on experience with a real dataset
+After training, I applied the model to prediabetes cases.
 
-## Tools
+For each person, the model gives:
+
+* Probability of being closer to normal
+* Probability of being closer to diabetes
+
+Based on that:
+
+* If diabetes probability is higher → high risk
+* Otherwise → low risk
+
+
+## Application
+
+I built a Streamlit app for this project.
+
+The app allows:
+
+* Viewing dataset overview
+* Training and comparing models
+* Entering user input
+* Getting risk direction output
+
+
+## Limitations
+
+This dataset does not have time-based data.
+
+So the model does not predict whether someone *will* get diabetes in the future.
+It only checks whether their current health profile looks closer to diabetes or normal.
+
+
+## Tools used
 
 * Python
 * Pandas, NumPy
-* Matplotlib, Seaborn
 * Scikit-learn
-* Jupyter Notebook
-## Note
+* XGBoost
+* Streamlit
 
-This project is still in progress, and I will be updating this file as I complete each step.
 
+## Final thoughts
+
+This project helped me understand how to work with real-world health data, handle imbalance, and think beyond standard classification problems by changing the problem approach.
