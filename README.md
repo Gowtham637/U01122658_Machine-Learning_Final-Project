@@ -112,6 +112,34 @@ The app allows:
 * Entering user input
 * Getting risk direction output
 
+## How to Run the Project
+
+To run this project locally, make sure Python is installed on your system.
+
+Open a terminal or command prompt and navigate to the project folder.
+
+Install the required dependencies using:
+
+pip install -r requirements.txt
+
+You can run the project in two ways:
+
+If you want to run the full pipeline (data preprocessing, model training, and evaluation), run:
+
+python main.py
+
+This will display results and performance metrics in the terminal.
+
+To use the interactive application, run:
+
+streamlit run app.py
+
+After running this command, a local URL (usually [http://localhost:8501](http://localhost:8501)) will appear in the terminal. Open it in your browser.
+
+The application allows you to explore the dataset, train models, and test predictions.
+
+Make sure the dataset file is present in the project directory before running the code.
+
 
 ## Limitations
 
